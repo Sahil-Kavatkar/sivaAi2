@@ -18,7 +18,7 @@ const xlsx = require("xlsx");
 
 const session = require('express-session')
 const passport = require('passport');
-
+const MongoStore= require("connect-mongo");
 const LocalStrategy = require('passport-local');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
@@ -31,7 +31,7 @@ const { JSDOM } = require('jsdom');
 const window = new JSDOM('').window;   // Create a window object for DOMPurify
 const purify = DOMPurify(window);      
 const QRCode = require("qrcode");
-const MongoStore = require('connect-mongo');
+
 const crypto = require('crypto'); // For generating random reset tokens
 const cors = require('cors');
 app.use(cors({
@@ -133,7 +133,21 @@ app.use(bodyParser.json())
 
 app.engine('ejs', ejsMate);
 
+
+const store= MongoStore.create({
+    mongoUrl: MONGO_URL,
+    crypto:{
+        secret: 'vcet',
+    },
+    touchAfter:24 * 3600,
+});
+
+store.on("error",()=>{
+    console.log("ERROR in MongoStore",err);
+});
+
 app.use(session({
+    store,
     secret: 'vcet',
     resave: false,
     saveUninitialized: true,
