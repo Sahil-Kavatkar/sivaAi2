@@ -52,7 +52,7 @@ const AdminOTPVerificationPage = () => {
     const otp = code.join("");
 
     try {
-      const response = await fetch("http://localhost:8080/adminverify-otp", {
+      const response = await fetch("https://siva-ai-hpg2.onrender.com/adminverify-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

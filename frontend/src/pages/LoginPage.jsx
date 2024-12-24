@@ -41,7 +41,7 @@ const LoginPage = () => {
 	
 		try {
 			console.log("Sending login request...");
-			const response = await axios.post("http://localhost:8080/login", {
+			const response = await axios.post("https://siva-ai-hpg2.onrender.com/login", {
 				email,
 				password,
 			}, {

@@ -12,7 +12,7 @@ const AdminDash = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const response = await fetch("http://localhost:8080/adminprofile", {
+                const response = await fetch("https://siva-ai-hpg2.onrender.com/adminprofile", {
                     method: "GET",
                     credentials: "include", // Important to include cookies
                 });
@@ -44,7 +44,7 @@ const AdminDash = () => {
     
 	const handleLogout = async () => {
         try {
-            const response = await fetch("http://localhost:8080/adminlogout", {
+            const response = await fetch("https://siva-ai-hpg2.onrender.com/adminlogout", {
                 method: "GET",
                 credentials: "include", // Include credentials for session handling
             });
@@ -69,7 +69,7 @@ const AdminDash = () => {
         }
     
         try {
-          const response = await fetch("http://localhost:8080/addSingleEmail", {
+          const response = await fetch("https://siva-ai-hpg2.onrender.com/addSingleEmail", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -99,7 +99,7 @@ const AdminDash = () => {
         formData.append("file", excelFile);
     
         try {
-          const response = await fetch("http://localhost:8080/addExcelFile", {
+          const response = await fetch("https://siva-ai-hpg2.onrender.com/addExcelFile", {
             method: "POST",
             body: formData,
             credentials: "include",

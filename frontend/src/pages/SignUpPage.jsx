@@ -24,7 +24,7 @@ const SignUpPage = () => {
 
         try {
             console.log("Sending signup request...");
-            const response = await axios.post("http://localhost:8080/signin", {
+            const response = await axios.post("https://siva-ai-hpg2.onrender.com/signin", {
                 email,
                 password,
                 displayName: name,

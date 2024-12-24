@@ -41,7 +41,7 @@ const AdminLoginPage = () => {
 
 		try {
 			console.log("Sending admin login request...");
-			const response = await axios.post("http://localhost:8080/adminlogin", {
+			const response = await axios.post("https://siva-ai-hpg2.onrender.com/adminlogin", {
 				email,
 				password,
 				organizationId, // Include organization ID in the request

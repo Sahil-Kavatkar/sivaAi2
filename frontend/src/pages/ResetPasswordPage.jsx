@@ -26,7 +26,7 @@ const ResetPasswordPage = () => {
 
         try {
             setIsLoading(true);
-            const response = await fetch(`http://localhost:8080/reset-password/${token}`, {
+            const response = await fetch(`https://siva-ai-hpg2.onrender.com/reset-password/${token}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

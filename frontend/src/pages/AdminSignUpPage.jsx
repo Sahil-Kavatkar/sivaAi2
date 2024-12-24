@@ -23,7 +23,7 @@ const AdminSignUpPage = () => {
 
         try {
             console.log("Sending admin signup request...");
-            const response = await axios.post("http://localhost:8080/adminsignin", {
+            const response = await axios.post("https://siva-ai-hpg2.onrender.com/adminsignin", {
                 email,
                 password,
                 name,

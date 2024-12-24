@@ -16,7 +16,7 @@ const ForgotPasswordPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8080/forgot-password", {
+      const response = await fetch("https://siva-ai-hpg2.onrender.com/forgot-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
