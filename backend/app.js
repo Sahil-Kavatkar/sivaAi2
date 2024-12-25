@@ -137,7 +137,7 @@ app.engine('ejs', ejsMate);
 const store= MongoStore.create({
     mongoUrl: MONGO_URL,
     crypto:{
-        secret: 'vcet',
+        secret: process.env.SECRET,
     },
     touchAfter:24 * 3600,
 });
@@ -149,7 +149,7 @@ store.on("error", (err) => {
 
 app.use(session({
     store,
-    secret: 'vcet',
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     // store: MongoStore.create({ mongoUrl: "mongodb://localhost:27017/sessiondb" }),
