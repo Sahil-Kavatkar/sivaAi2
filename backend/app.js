@@ -457,6 +457,10 @@ app.post(
                 // Store user ID and OTP status in the session
                 req.session.adminid = user._id;
                 req.session.adminotpVerified = false;
+                console.log("Session data after setting adminid:", req.session);
+                console.log("Adminid:", user._id);
+                console.log("Adminid:", user.id);
+
 
                 // Check if OTP secret already exists for the user
                 if (!user.otpSecret) {
