@@ -142,9 +142,10 @@ const store= MongoStore.create({
     touchAfter:24 * 3600,
 });
 
-store.on("error",()=>{
-    console.log("ERROR in MongoStore",err);
+store.on("error", (err) => {
+    console.log("ERROR in MongoStore:", err);
 });
+
 
 app.use(session({
     store,
@@ -552,13 +553,13 @@ app.post('/adminverify-otp', async (req, res) => {
         console.log("Admin id",Administrator);
 
         // Check if the user is logged in
-        if (!adminid) {
+        if (!Administrator) {
             console.log("not login by admin");
             return res.status(401).json({ message: "Unauthorized. Please log in first." });
         }
 
         // Retrieve the user's OTP secret from the database
-        const user = await Admin.findById(adminid);
+        const user = await Admin.findById(Administrator);
         console.log(user);
         if (!user || !user.otpSecret) {
             return res.status(400).json({ message: "OTP setup not completed. Please contact support." });
