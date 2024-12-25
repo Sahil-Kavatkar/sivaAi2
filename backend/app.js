@@ -130,6 +130,8 @@ const store= MongoStore.create({
     touchAfter:24 * 3600,
 });
 
+console.log('MongoStore initialized successfully');
+
 store.on('create', (sessionId) => {
     console.log('Session created with ID:', sessionId);
   });
@@ -208,6 +210,14 @@ const transporter = nodemailer.createTransport({
       console.error('Error sending OTP:', error);
     }
   };
+
+  app.get('/', (req, res) => {
+    if (!req.session.views) {
+      req.session.views = 0;
+    }
+    req.session.views++;
+    res.send(`Views: ${req.session.views}`);
+  });
   
 
 app.post('/signin', async (req, res) => {
