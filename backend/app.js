@@ -356,6 +356,8 @@ app.post(
                 console.error("Authentication error:", err);
                 return res.status(500).json({ error: "Internal server error" });
             }
+
+            
             
             if (!user) {
                 // Wrong password or invalid credentials
@@ -366,6 +368,7 @@ app.post(
             req.logIn(user, async (err) => {
                 if (err) {
                     console.error("Login error:", err);
+                    
                     return res.status(500).json({ error: "Login failed" });
                 }
 
@@ -423,14 +426,14 @@ app.post(
 
 app.post(
     '/adminlogin',
-    loginLimiter,
-    async (req, res, next) => {
+    loginLimiter, async(req, res, next) => {
         passport.authenticate('admin-local', async (err, user, info) => {
             if (err) {
                 console.error("Authentication error:", err);
                 return res.status(500).json({ error: "Internal server error" });
             }
-            
+            console.log("User info", user);
+
             if (!user) {
                 // Wrong password or invalid credentials
                 return res.status(401).json({ error: info?.message || "Invalid credentials" });
@@ -452,7 +455,7 @@ app.post(
                 }
 
                 // Store user ID and OTP status in the session
-                req.session.adminid = user.id;
+                req.session.adminid = user._id;
                 req.session.adminotpVerified = false;
 
                 // Check if OTP secret already exists for the user
@@ -541,6 +544,7 @@ app.post('/adminverify-otp', async (req, res) => {
     try {
         const adminid = req.session.adminid; // Retrieve the logged-in user's ID from the session
         const userInputOtp = req.body.otp; // OTP entered by the user
+        console.log("Admin id",adminid);
 
         // Check if the user is logged in
         if (!adminid) {
