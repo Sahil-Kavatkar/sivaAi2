@@ -37,7 +37,7 @@ const cors = require('cors');
 app.use(cors({
   origin: ['http://localhost:5173', 'https://siva-ai-f.onrender.com'],
   methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true 
 }));
 
@@ -145,6 +145,8 @@ app.use(session({
         // secure: process.env.NODE_ENV === 'production',
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
+        secure: true, // HTTPS required for cross-origin cookies
+        sameSite: 'none', // Allows cross-origin cookies
     }
 }));
 
