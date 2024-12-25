@@ -111,18 +111,6 @@ connectToDatabases()
     .catch((err) => {
         console.error("Failed to connect to databases:", err);
     });
-// const dbUrl = process.env.ATLASDB_URL;
-
-// main().then(() => {
-//     console.log("connected to db");
-// }).catch((err) => {
-//     console.log(err);
-// });
-
-// async function main() {
-//     await mongoose.connect(MONGO_URL);
-// };
-
 
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
@@ -151,11 +139,10 @@ app.use(session({
     store,
     secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: true,
-    // store: MongoStore.create({ mongoUrl: "mongodb://localhost:27017/sessiondb" }),
+    saveUninitialized: false,
     cookie: {
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-        secure: process.env.NODE_ENV === 'production',
+        // secure: process.env.NODE_ENV === 'production',
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
     }
@@ -178,6 +165,7 @@ passport.deserializeUser(async (obj, done) => {
         try {
             if (obj.type === 'Admin') {
                 const admin = await Admin.findById(obj.id);
+                console.log("Admin info apple:",admin)
                 return done(null, admin);
             } else {
                 const user = await User.findById(obj.id);
@@ -782,7 +770,7 @@ app.post('/forgot-password', async (req, res) => {
         await user.save();
 
         // Send the reset link via email
-        const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+        const resetLink = `https://siva-ai-f.onrender.com/${resetToken}`;
         await transporter.sendMail({
             to: user.email,
             subject: 'Password Reset Request',
