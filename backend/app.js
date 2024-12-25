@@ -457,10 +457,12 @@ app.post(
 
                 // Store user ID and OTP status in the session
                 req.session.adminid = user._id;
+                req.session.adminid1 = user.id;
                 req.session.adminotpVerified = false;
                 console.log("Session data after setting adminid:", req.session);
                 console.log("Adminid:", user._id);
                 console.log("Adminid:", user.id);
+                req.session.save(); 
 
 
                 // Check if OTP secret already exists for the user
@@ -548,9 +550,11 @@ app.post('/verify-otp', async (req, res) => {
 app.post('/adminverify-otp', async (req, res) => {
     try {
         console.log("Session in /adminverify-otp:", req.session);
-        const Administrator = req.session.adminid; // Retrieve the logged-in user's ID from the session
+        const Administrator = req.session.adminid;
+        const Administrator1 = req.session.adminid1; // Retrieve the logged-in user's ID from the session
         const userInputOtp = req.body.otp; // OTP entered by the user
         console.log("Admin id",Administrator);
+        console.log("Admin id1",Administrator1);
 
         // Check if the user is logged in
         if (!Administrator) {
