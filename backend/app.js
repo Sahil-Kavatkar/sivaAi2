@@ -546,9 +546,10 @@ app.post('/verify-otp', async (req, res) => {
 
 app.post('/adminverify-otp', async (req, res) => {
     try {
-        const adminid = req.session.adminid; // Retrieve the logged-in user's ID from the session
+        console.log("Session in /adminverify-otp:", req.session);
+        const Administrator = req.session.adminid; // Retrieve the logged-in user's ID from the session
         const userInputOtp = req.body.otp; // OTP entered by the user
-        console.log("Admin id",adminid);
+        console.log("Admin id",Administrator);
 
         // Check if the user is logged in
         if (!adminid) {
