@@ -130,6 +130,14 @@ const store= MongoStore.create({
     touchAfter:24 * 3600,
 });
 
+store.on('create', (sessionId) => {
+    console.log('Session created with ID:', sessionId);
+  });
+
+store.on('touch', (sessionId) => {
+    console.log('Session updated for ID:', sessionId);
+  });
+
 store.on("error", (err) => {
     console.log("ERROR in MongoStore:", err);
 });
@@ -146,7 +154,7 @@ app.use(session({
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
         secure: true, // HTTPS required for cross-origin cookies
-        sameSite: 'none', // Allows cross-origin cookies
+        sameSite: 'None', // Allows cross-origin cookies
     }
 }));
 
@@ -201,18 +209,6 @@ const transporter = nodemailer.createTransport({
     }
   };
   
-app.get("/index", (req, res) => {
-    res.render("index.ejs");
-});
-
-app.get("/admin", (req, res) => {
-    res.render("admin.ejs");
-});
-
-
-app.get("/signin", (req, res) => {
-    res.render("signin.ejs");
-});
 
 app.post('/signin', async (req, res) => {
     try {
