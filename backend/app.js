@@ -47,70 +47,16 @@ app.use(cors({
 
 
 const MONGO_URL = process.env.ATLASDB_URL;
-const FRIEND_MONGO_URL = process.env.ATLASDB_URL1;
 
-async function connectToDatabases() {
-    try {
-        // Connect to your primary database
-        await mongoose.connect(MONGO_URL);
-        console.log("Connected to your primary database");
+main().then(() => {
+    console.log("connected to db");
+}).catch((err) => {
+    console.log(err);
+});
 
-        // Create a separate connection for your friend's database
-        const friendConnection = await mongoose.createConnection(FRIEND_MONGO_URL).asPromise();
-        console.log("Connected to friend's database");
-
-        const genericSchema = new mongoose.Schema({}, { strict: false });
-        const FriendModel = friendConnection.model('FriendData', genericSchema, 'analytics');
-        
-        const friendData = await FriendModel.find({});
-        
-
-        // More detailed investigation
-        const collection = friendConnection.db.collection('analytics');
-        
-        // Get total document count directly
-        const documentCount = await collection.countDocuments();
-        console.log("Total document count:", documentCount);
-
-        // Try retrieving documents without any filter
-        const rawDocuments = await collection.find({}).toArray();
-        console.log("Raw documents count:", rawDocuments.length);
-        
-        // If no documents found, try different approaches
-        if (rawDocuments.length === 0) {
-            // Check for any potential filtering issues
-            console.log("Trying to find with different methods:");
-            
-            // Try with different query methods
-            const findResult = await FriendModel.find().lean();
-            console.log("Mongoose .find() result:", findResult.length);
-
-            const directMongoFind = await collection.find({}).limit(10).toArray();
-            console.log("Direct MongoDB find result:", directMongoFind.length);
-            
-            if (directMongoFind.length > 0) {
-                console.log("Sample document:", directMongoFind[0]);
-            }
-        }
-
-        return {
-            primaryConnection: mongoose.connection,
-            friendConnection: friendConnection
-        };
-    } catch (error) {
-        console.error("Detailed connection error:", error);
-        throw error;
-    }
-}
-
-// Call the function to connect
-connectToDatabases()
-    .then(() => {
-        console.log("Databases connected successfully");
-    })
-    .catch((err) => {
-        console.error("Failed to connect to databases:", err);
-    });
+async function main() {
+    await mongoose.connect(MONGO_URL);
+}; 
 
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
