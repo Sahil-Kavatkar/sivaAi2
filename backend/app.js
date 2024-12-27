@@ -35,7 +35,7 @@ const QRCode = require("qrcode");
 const crypto = require('crypto'); // For generating random reset tokens
 const cors = require('cors');
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://siva-ai-f.onrender.com'],
+  origin: 'https://siva-ai-2.onrender.com',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true 
