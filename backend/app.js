@@ -221,17 +221,12 @@ const transporter = nodemailer.createTransport({
     }
   };
   
-app.get("/index", (req, res) => {
-    res.render("index.ejs");
-});
-
-app.get("/admin", (req, res) => {
-    res.render("admin.ejs");
-});
-
-
-app.get("/signin", (req, res) => {
-    res.render("signin.ejs");
+app.get('/test-session', (req, res) => {
+    if (!req.session) {
+        return res.status(500).send('Session is not initialized.');
+    }
+    req.session.testKey = 'testValue'; // Set a test value in the session
+    res.send('Session is working. Cookie should be set.');
 });
 
 app.post('/signin', async (req, res) => {
