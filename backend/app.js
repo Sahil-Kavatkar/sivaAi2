@@ -125,7 +125,7 @@ async function main() {
 };
 
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
@@ -220,6 +220,11 @@ const transporter = nodemailer.createTransport({
       console.error('Error sending OTP:', error);
     }
   };
+  
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
+});
+  
   
 app.get('/test-session', (req, res) => {
     if (!req.session) {
