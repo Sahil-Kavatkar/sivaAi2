@@ -4,6 +4,7 @@ if (process.env.NODE_ENV != "production") {
 
 const express = require("express");
 const app = express();
+
 const mongoose = require("mongoose");
 const User = require("./models/user.js");
 const Admin = require('./models/admin.js');
@@ -32,6 +33,8 @@ const { JSDOM } = require('jsdom');
 const window = new JSDOM('').window;   // Create a window object for DOMPurify
 const purify = DOMPurify(window);      
 const QRCode = require("qrcode");
+
+const __dirname = path.resolve();
 
 const crypto = require('crypto'); // For generating random reset tokens
 const cors = require('cors');
@@ -125,14 +128,13 @@ async function main() {
 };
 
 
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json())
+app.use(cookieParser());
 
-app.engine('ejs', ejsMate);
 
 const store= MongoStore.create({
     mongoUrl: MONGO_URL,
@@ -198,6 +200,14 @@ passport.deserializeUser(async (obj, done) => {
         }
 });
 
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+	app.get("*", (req, res) => {
+		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+	});
+}
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -221,9 +231,7 @@ const transporter = nodemailer.createTransport({
     }
   };
   
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
-});
+
   
   
 app.get('/test-session', (req, res) => {
