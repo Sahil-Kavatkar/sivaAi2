@@ -18,7 +18,8 @@ const xlsx = require("xlsx");
 
 const session = require('express-session')
 const passport = require('passport');
-const MongoStore= require("connect-mongo");
+const MongoStore = require('connect-mongo');
+
 const LocalStrategy = require('passport-local');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
@@ -35,9 +36,9 @@ const QRCode = require("qrcode");
 const crypto = require('crypto'); // For generating random reset tokens
 const cors = require('cors');
 app.use(cors({
-  origin: 'https://siva-ai-2.onrender.com',
+  origin: 'https://siva-ai-2.onrender.com', 
   methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type'],
   credentials: true 
 }));
 
@@ -47,6 +48,71 @@ app.use(cors({
 
 
 const MONGO_URL = process.env.ATLASDB_URL;
+// const FRIEND_MONGO_URL = "mongodb+srv://dhruvpatel150204:internship123@cluster0.ec2du.mongodb.net/SIH?retryWrites=true&w=majority&appName=Cluster0";
+
+// async function connectToDatabases() {
+//     try {
+//         // Connect to your primary database
+//         await mongoose.connect(MONGO_URL);
+//         console.log("Connected to your primary database");
+
+//         // Create a separate connection for your friend's database
+//         const friendConnection = await mongoose.createConnection(FRIEND_MONGO_URL).asPromise();
+//         console.log("Connected to friend's database");
+
+//         const genericSchema = new mongoose.Schema({}, { strict: false });
+//         const FriendModel = friendConnection.model('FriendData', genericSchema, 'analytics');
+        
+//         const friendData = await FriendModel.find({});
+        
+
+//         // More detailed investigation
+//         const collection = friendConnection.db.collection('analytics');
+        
+//         // Get total document count directly
+//         const documentCount = await collection.countDocuments();
+//         console.log("Total document count:", documentCount);
+
+//         // Try retrieving documents without any filter
+//         const rawDocuments = await collection.find({}).toArray();
+//         console.log("Raw documents count:", rawDocuments.length);
+        
+//         // If no documents found, try different approaches
+//         if (rawDocuments.length === 0) {
+//             // Check for any potential filtering issues
+//             console.log("Trying to find with different methods:");
+            
+//             // Try with different query methods
+//             const findResult = await FriendModel.find().lean();
+//             console.log("Mongoose .find() result:", findResult.length);
+
+//             const directMongoFind = await collection.find({}).limit(10).toArray();
+//             console.log("Direct MongoDB find result:", directMongoFind.length);
+            
+//             if (directMongoFind.length > 0) {
+//                 console.log("Sample document:", directMongoFind[0]);
+//             }
+//         }
+
+//         return {
+//             primaryConnection: mongoose.connection,
+//             friendConnection: friendConnection
+//         };
+//     } catch (error) {
+//         console.error("Detailed connection error:", error);
+//         throw error;
+//     }
+// }
+
+// // Call the function to connect
+// connectToDatabases()
+//     .then(() => {
+//         console.log("Databases connected successfully");
+//     })
+//     .catch((err) => {
+//         console.error("Failed to connect to databases:", err);
+//     });
+// const dbUrl = process.env.ATLASDB_URL;
 
 main().then(() => {
     console.log("connected to db");
@@ -56,7 +122,8 @@ main().then(() => {
 
 async function main() {
     await mongoose.connect(MONGO_URL);
-}; 
+};
+
 
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
@@ -67,11 +134,10 @@ app.use(bodyParser.json())
 
 app.engine('ejs', ejsMate);
 
-
 const store= MongoStore.create({
     mongoUrl: MONGO_URL,
     crypto:{
-        secret: process.env.SECRET,
+        secret: 'vcet',
     },
     touchAfter:24 * 3600,
 });
@@ -79,7 +145,7 @@ const store= MongoStore.create({
 console.log('MongoStore initialized successfully');
 
 store.on('create', (sessionId) => {
-    console.log('Session created with ID:', sessionId);
+    console.log('Session created with ID1:', sessionId);
   });
 
 store.on('touch', (sessionId) => {
@@ -90,21 +156,17 @@ store.on("error", (err) => {
     console.log("ERROR in MongoStore:", err);
 });
 
-
 app.use(session({
     store,
-    secret: process.env.SECRET,
+    secret: 'vcet',
     resave: false,
     saveUninitialized: false,
     cookie: {
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-        // secure: process.env.NODE_ENV === 'production',
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: true, // HTTPS required for cross-origin cookies
-        sameSite: 'None', // Allows cross-origin cookies
-    },
-    domain: 'onrender.com',
+        sameSite: 'None',
+    }
 }));
 
 
@@ -124,7 +186,6 @@ passport.deserializeUser(async (obj, done) => {
         try {
             if (obj.type === 'Admin') {
                 const admin = await Admin.findById(obj.id);
-                console.log("Admin info apple:",admin)
                 return done(null, admin);
             } else {
                 const user = await User.findById(obj.id);
@@ -157,15 +218,19 @@ const transporter = nodemailer.createTransport({
       console.error('Error sending OTP:', error);
     }
   };
-
-  app.get('/', (req, res) => {
-    if (!req.session.views) {
-      req.session.views = 0;
-    }
-    req.session.views++;
-    res.send(`Views: ${req.session.views}`);
-  });
   
+app.get("/index", (req, res) => {
+    res.render("index.ejs");
+});
+
+app.get("/admin", (req, res) => {
+    res.render("admin.ejs");
+});
+
+
+app.get("/signin", (req, res) => {
+    res.render("signin.ejs");
+});
 
 app.post('/signin', async (req, res) => {
     try {
@@ -300,8 +365,6 @@ app.post(
                 console.error("Authentication error:", err);
                 return res.status(500).json({ error: "Internal server error" });
             }
-
-            
             
             if (!user) {
                 // Wrong password or invalid credentials
@@ -312,7 +375,6 @@ app.post(
             req.logIn(user, async (err) => {
                 if (err) {
                     console.error("Login error:", err);
-                    
                     return res.status(500).json({ error: "Login failed" });
                 }
 
@@ -370,14 +432,14 @@ app.post(
 
 app.post(
     '/adminlogin',
-    loginLimiter, async(req, res, next) => {
+    loginLimiter,
+    async (req, res, next) => {
         passport.authenticate('admin-local', async (err, user, info) => {
             if (err) {
                 console.error("Authentication error:", err);
                 return res.status(500).json({ error: "Internal server error" });
             }
-            console.log("User info", user);
-
+            
             if (!user) {
                 // Wrong password or invalid credentials
                 return res.status(401).json({ error: info?.message || "Invalid credentials" });
@@ -399,14 +461,10 @@ app.post(
                 }
 
                 // Store user ID and OTP status in the session
-                req.session.adminid = user._id;
-                req.session.adminid1 = user.id;
+                req.session.adminid = user.id;
                 req.session.adminotpVerified = false;
                 console.log("Session data after setting adminid:", req.session);
-                console.log("Adminid:", user._id);
                 console.log("Adminid:", user.id);
-                req.session.save(); 
-
 
                 // Check if OTP secret already exists for the user
                 if (!user.otpSecret) {
@@ -493,20 +551,17 @@ app.post('/verify-otp', async (req, res) => {
 app.post('/adminverify-otp', async (req, res) => {
     try {
         console.log("Session in /adminverify-otp:", req.session);
-        const Administrator = req.session.adminid;
-        const Administrator1 = req.session.adminid1; // Retrieve the logged-in user's ID from the session
+        const adminid = req.session.adminid; // Retrieve the logged-in user's ID from the session
         const userInputOtp = req.body.otp; // OTP entered by the user
-        console.log("Admin id",Administrator);
-        console.log("Admin id1",Administrator1);
-
+        console.log(adminid);
         // Check if the user is logged in
-        if (!Administrator) {
+        if (!adminid) {
             console.log("not login by admin");
             return res.status(401).json({ message: "Unauthorized. Please log in first." });
         }
 
         // Retrieve the user's OTP secret from the database
-        const user = await Admin.findById(Administrator);
+        const user = await Admin.findById(adminid);
         console.log(user);
         if (!user || !user.otpSecret) {
             return res.status(400).json({ message: "OTP setup not completed. Please contact support." });
@@ -725,7 +780,7 @@ app.post('/forgot-password', async (req, res) => {
         await user.save();
 
         // Send the reset link via email
-        const resetLink = `https://siva-ai-f.onrender.com/${resetToken}`;
+        const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
         await transporter.sendMail({
             to: user.email,
             subject: 'Password Reset Request',
