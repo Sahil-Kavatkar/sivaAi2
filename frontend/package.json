@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-  "build": "npx vite build",
-  "dev": "npx vite",
-  "preview": "npx vite preview"
-},
+    "build": "npx vite --clearCache && npx vite build",
+    "dev": "npx vite",
+    "preview": "npx vite preview"
+  },
   "dependencies": {
     "@react-spring/web": "^9.7.5",
     "autoprefixer": "^10.4.17",
@@ -37,7 +37,7 @@
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.26.3",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "babel-loader": "^9.2.1",
     "vite": "^5.4.11"
   }
