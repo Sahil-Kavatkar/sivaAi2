@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "npx vite build",
-    "preview": "vite preview"
-  },
+  "build": "npx vite build",
+  "dev": "npx vite",
+  "preview": "npx vite preview"
+},
   "dependencies": {
     "@react-spring/web": "^9.7.5",
     "autoprefixer": "^10.4.17",
@@ -26,7 +26,6 @@
     "react-intersection-observer": "^9.5.3",
     "react-particles": "^2.12.2",
     "react-router-dom": "^7.0.2",
-    "siva-ai-website": "file:",
     "tailwindcss": "^3.4.1",
     "tsparticles-slim": "^2.12.0",
     "typed.js": "^2.1.0",
