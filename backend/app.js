@@ -34,7 +34,6 @@ const window = new JSDOM('').window;   // Create a window object for DOMPurify
 const purify = DOMPurify(window);      
 const QRCode = require("qrcode");
 
-const __dirname = path.resolve();
 
 const crypto = require('crypto'); // For generating random reset tokens
 const cors = require('cors');
@@ -200,13 +199,13 @@ passport.deserializeUser(async (obj, done) => {
         }
 });
 
-if (process.env.NODE_ENV === "production") {
-	app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
-	app.get("*", (req, res) => {
-		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+app.get("*", (req, res) => {
+		res.sendFile(path.join(__dirname,"../frontend/dist", "index.html"));
 	});
-}
+
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
