@@ -36,9 +36,11 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"npm run build-frontend && node app.js",
-    "build-frontend":"cd ../frontend && npm install && npm run build",
-    "start-prod":"npm run build-frontend && node app.js"
+    "start": "npm run build && node app.js",
+    "build": "npm run build-frontend && npm run build-backend",
+    "build-frontend": "cd ../frontend && npm install && npm run build",
+    "start-prod":"npm run build-frontend && node app.js",
+    "build-backend": "node app.js"
   },
   "keywords": [],
   "author": "",
